@@ -3,11 +3,13 @@
  */
 package bitmap;
 
+import java.util.Iterator;
+
 /**
  * @author demps
  *
  */
-public class IntegerBitmap implements Bitmap {
+public class IntegerBitmap implements Bitmap, Iterable<Integer> {
 	private byte [] map;
 	private int capacity;
 	private int size;
@@ -41,7 +43,7 @@ public class IntegerBitmap implements Bitmap {
 			int index = n / 8;
 			
 			//get appropriate mask
-			int radix = index % 8;
+			int radix = n % 8;
 			byte mask = getMask(radix);
 			
 			// OR the mask with the value in the map
@@ -53,8 +55,18 @@ public class IntegerBitmap implements Bitmap {
 	
 	@Override
 	public boolean remove(int n) {
-		// TODO Auto-generated method stub
-				return false;
+		if (!contains(n)) {
+			return false;
+		} else {
+			int index = n / 8;
+			int radix = n % 8;
+			byte mask = getMask(radix);
+			
+			//XOR to remove a value
+			map[index] = (byte) (map[index ^ mask]);
+			size--;
+			return true;
+		}
 	}
 	
 	@Override
@@ -63,9 +75,9 @@ public class IntegerBitmap implements Bitmap {
 			return false;
 		
 		int index = n / 8;
-		int radix = index % 8;
+		int radix = n % 8;
 		byte mask = getMask(radix);
-		int result = map[index] & mask;
+		byte result = (byte) (map[index] & mask);
 		
 		return result != 0;
 	}
@@ -91,5 +103,30 @@ public class IntegerBitmap implements Bitmap {
 			throw new IllegalArgumentException("radix " + radix + " out of bounds for an integer");
 		
 		return (byte) (MASK >>> radix);	//unsigned right shift operator
+	}
+
+	@Override
+	public Iterator<Integer> iterator() {
+		return new Iterator<>() {
+			int curr = 0;
+			
+			@Override
+			public boolean hasNext() {
+				return curr < capacity;
+			}
+
+			@Override
+			public Integer next() {
+				//find the next value present in the bitmap
+				for ( ; hasNext() && !contains(curr); ++curr);
+				
+				return curr++;	//increment curr to prevent it getting caught on present value
+			}
+			
+		};
+	}
+	
+	public byte getMapContents(int arrayIndex) {
+		return map[arrayIndex];
 	}
 }

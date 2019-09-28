@@ -22,6 +22,10 @@ class IntegerBitmapTests {
 	byte h = 1;
 	
 	private static final int TEST_1 = 765; 
+	private static final int TEST_2 = 100200; 
+	private static final int TEST_3 = 999999; 
+	private static final int TEST_4 = 567322; 
+	private static final int TEST_5 = 7; 
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -98,5 +102,36 @@ class IntegerBitmapTests {
 		assertThrows(IllegalArgumentException.class, () -> {
 			bm.add(1000000);
 		});
+	}
+	
+	@Test
+	final void testAddRemove() {
+		bm.add(TEST_1);
+		bm.add(TEST_2);
+		bm.add(TEST_3);
+		bm.add(TEST_4);
+		bm.add(TEST_5);
+		
+		assertTrue(bm.contains(TEST_1));
+		assertTrue(bm.contains(TEST_2));
+		assertTrue(bm.contains(TEST_3));
+		assertTrue(bm.contains(TEST_4));
+		assertTrue(bm.contains(TEST_5));
+		
+		assertTrue(bm.remove(TEST_3));
+		assertFalse(bm.contains(TEST_3));
+	}
+	
+	@Test
+	final void testContains() {
+		assertFalse(bm.contains(234));
+		assertFalse(bm.contains(233));
+		assertFalse(bm.contains(235));
+		
+		bm.add(234);
+		
+		assertTrue(bm.contains(234));
+		assertFalse(bm.contains(233));
+		assertFalse(bm.contains(235));
 	}
 }
