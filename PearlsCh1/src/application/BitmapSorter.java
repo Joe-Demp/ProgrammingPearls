@@ -1,9 +1,11 @@
+/*
+ * Issue: loses some numbers when moving from the bitmap to the output file
+ * 	probably due to limited memory
+ */
 package application;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Iterator;
 import java.util.Scanner;
