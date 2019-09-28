@@ -20,6 +20,8 @@ class IntegerBitmapTests {
 	byte f = 4;
 	byte g = 2;
 	byte h = 1;
+	
+	private static final int TEST_1 = 765; 
 
 	@BeforeEach
 	void setUp() throws Exception {
@@ -32,6 +34,29 @@ class IntegerBitmapTests {
 	}
 
 	@Test
+	final void testEmpty() {
+		assertTrue(bm.isEmpty());
+	}
+	@Test
+	final void testNotEmpty() {
+		bm.add(TEST_1);
+		assertFalse(bm.isEmpty());
+	}
+	
+	@Test
+	final void testEmptySize() {
+		assertEquals(0, bm.size());
+	}
+	@Test
+	final void testNotEmptySize() {
+		bm.add(1);
+		bm.add(234);
+		bm.add(TEST_1);
+		
+		assertEquals(3, bm.size());
+	}
+	
+	@Test
 	final void testGetMask() {
 		assertEquals(a, IntegerBitmap.getMask(0));
 		assertEquals(b, IntegerBitmap.getMask(1));
@@ -42,5 +67,36 @@ class IntegerBitmapTests {
 		assertEquals(g, IntegerBitmap.getMask(6));
 		assertEquals(h, IntegerBitmap.getMask(7));
 	}
+	
+	@Test
+	final void testAdd() {
+		assertFalse(bm.contains(TEST_1));
+		
+		assertTrue(bm.add(TEST_1));
+		
+		assertTrue(bm.contains(TEST_1));
+	}
+	
+	@Test
+	final void testAddMultiple() {
+		assertFalse(bm.contains(TEST_1));
+		
+		assertTrue(bm.add(TEST_1));
+		
+		assertTrue(bm.contains(TEST_1));
+		
+		assertFalse(bm.add(TEST_1));
+		
+		assertTrue(bm.contains(TEST_1));
+	}
 
+	@Test
+	final void testAddOutOfRange() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			bm.add(-1);
+		});
+		assertThrows(IllegalArgumentException.class, () -> {
+			bm.add(1000000);
+		});
+	}
 }

@@ -34,31 +34,40 @@ public class IntegerBitmap implements Bitmap {
 		if (n < 0 || n >= capacity)
 			throw new IllegalArgumentException("Argument " + n + " is outside the range for the bitmap");
 		
-		//establish the return value: contains(n)
-		boolean value = !contains(n);
-		
-		//find index in map,
-		int index = n / 8;
-		
-		//get appropriate mask
-		int radix = index % 8;
-		byte mask = getMask(radix);
-		
-		// OR the mask with the value in the map
-		map[index] = (byte) (map[index] | mask);
-		
-		return value;
+		if (contains(n)) {
+			return false;
+		} else {
+			//find index in map,
+			int index = n / 8;
+			
+			//get appropriate mask
+			int radix = index % 8;
+			byte mask = getMask(radix);
+			
+			// OR the mask with the value in the map
+			map[index] = (byte) (map[index] | mask);
+			size++;
+			return true;
+		}
 	}
 	
 	@Override
 	public boolean remove(int n) {
 		// TODO Auto-generated method stub
-		return false;
+				return false;
 	}
+	
 	@Override
 	public boolean contains(int n) {
-		// TODO Auto-generated method stub
-		return false;
+		if (n < 0 || n >= capacity)
+			return false;
+		
+		int index = n / 8;
+		int radix = index % 8;
+		byte mask = getMask(radix);
+		int result = map[index] & mask;
+		
+		return result != 0;
 	}
 
 	@Override
